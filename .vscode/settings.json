@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "be-dbgo",
+            "database": "be-dbgo",
+            "username": "golang",
+            "password": "golang123"
+        }
+    ]
+}

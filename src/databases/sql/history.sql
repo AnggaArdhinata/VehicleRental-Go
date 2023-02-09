@@ -1,0 +1,10 @@
+-- TODO CREATE TABLE HISTORY
+-- CREATE TABLE IF NOT EXISTS history (
+--     id BIGSERIAL PRIMARY KEY,
+--     reservation_id INT NOT NULL,
+--     status VARCHAR,
+--     created_at TIMESTAMP DEFAULT now(),
+--     updated_at TIMESTAMP,
+--     CONSTRAINT fk_reservation
+--         FOREIGN KEY (reservation_id) REFERENCES reservation(id)
+-- )
