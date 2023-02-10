@@ -6,6 +6,7 @@ import (
 )
 
 type Users_RepoIF interface {
+	GetByImgID(uid string) (*models.User, error)
 	GetById(id uint) (*models.User, error)
 	FindByEmail(email string) (*models.User, error)
 	FindByName(username string) (*models.User, error)
@@ -16,6 +17,7 @@ type Users_RepoIF interface {
 }
 
 type User_ServiceIF interface {
+	FindByImageID(uid string) *library.Responses
 	FindById(id uint) *library.Responses
 	FindByUserEmail(email string) *library.Responses
 	FindByUserName(username string) *library.Responses

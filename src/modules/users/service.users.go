@@ -1,6 +1,7 @@
 package users
 
 import (
+
 	"github.com/AnggaArdhinata/backend-go/src/databases/orm/models"
 	"github.com/AnggaArdhinata/backend-go/src/interfaces"
 	"github.com/AnggaArdhinata/backend-go/src/library"
@@ -12,6 +13,15 @@ type user_service struct {
 
 func NewService(repo interfaces.Users_RepoIF) *user_service {
 	return &user_service{repo}
+}
+
+func (s *user_service) FindByImageID(uid string) *library.Responses {
+	data, err := s.repo.GetByImgID(uid)
+	if err != nil {
+		return library.Response(err.Error(), 400, true)
+	}
+	return library.Response(data, 200, false)
+
 }
 
 func (s *user_service) FindById(id uint) *library.Responses {
@@ -71,6 +81,12 @@ func (s *user_service) Update(id uint, res *models.User) *library.Responses {
 }
 
 func (s *user_service) Delete(id uint) *library.Responses {
+	user, err := s.repo.GetById(id)
+	if err != nil {
+		return library.Response("data not found !", 404, true)
+	}
+	uidImage := user.ImgId
+	library.DeleteImage(uidImage)
 	data, err := s.repo.Remove(id)
 	if err != nil {
 		return library.Response(err.Error(), 400, true)

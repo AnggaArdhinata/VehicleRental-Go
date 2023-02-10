@@ -9,6 +9,7 @@ import (
 	"github.com/AnggaArdhinata/backend-go/src/interfaces"
 	"github.com/AnggaArdhinata/backend-go/src/library"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/schema"
 )
 
 type vehicles_ctrl struct {
@@ -28,9 +29,20 @@ func (c *vehicles_ctrl) FindAll(w http.ResponseWriter, r *http.Request) {
 
 func (c *vehicles_ctrl) Add(w http.ResponseWriter, r *http.Request) {
 	var data models.Vehicle
+	var decoder = schema.NewDecoder()
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		library.Response(err.Error(), 500, true).Send(w)
+		return
+	}
+	uploads := r.Context().Value("file")
+	if uploads != nil {
+		data.Image = uploads.(string)
+		return
+	}
+	err = decoder.Decode(&data, r.PostForm)
+	if err != nil {
+		library.Response(err, 500, true)
 		return
 	}
 

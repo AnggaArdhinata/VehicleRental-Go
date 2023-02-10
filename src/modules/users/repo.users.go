@@ -16,6 +16,15 @@ func NewUserRepo(data *gorm.DB) *users_repo {
 	return &users_repo{db: data}
 }
 
+func (r *users_repo) GetByImgID(uid string) (*models.User, error) {
+	var data models.User
+	result := r.db.First(&data, "img_id = ?", uid)
+	if result.Error != nil {
+		return nil, errors.New("failed to get data")
+	}
+	return &data, nil
+}
+
 func (r *users_repo) GetById(id uint) (*models.User, error) {
 	var data models.User
 	result := r.db.First(&data, "id = ?", id)
