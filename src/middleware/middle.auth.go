@@ -49,7 +49,9 @@ func AuthMiddle(role ...string) Middle {
 			//** share userid to controller
 			ctx := context.WithValue(r.Context(), "user", checkToken.User_Id)
 
+
 			//** serve next middleware
+			// next.ServeHTTP(w, r.WithContext(cntx))
 			next.ServeHTTP(w, r.WithContext(ctx))
 
 		})

@@ -10,6 +10,7 @@ import (
 	"github.com/AnggaArdhinata/backend-go/src/library"
 	"github.com/asaskevich/govalidator"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/schema"
 )
 
 type users_ctrl struct {
@@ -62,18 +63,34 @@ func (c *users_ctrl) FindAll(w http.ResponseWriter, r *http.Request) {
 
 func (c *users_ctrl) Add(w http.ResponseWriter, r *http.Request) {
 	var data models.User
-	err := json.NewDecoder(r.Body).Decode(&data)
+	var decoder = schema.NewDecoder()
+
+	file, handler, err := r.FormFile("image")
 	if err != nil {
-		library.Response(err.Error(), 500, true).Send(w)
+		panic(err)
+	}
+	defer file.Close()
+
+	uploadImage, publicId, err := library.UploadImage(file, handler)
+	if err != nil {
+		library.Response(err, 500, true)
 		return
 	}
+	data.Image = uploadImage
+	data.ImgId = publicId
 
+	err = decoder.Decode(&data, r.Form)
+	if err != nil {
+		library.Response(err, 500, true)
+		return
+	}
 	_, err = govalidator.ValidateStruct(data)
 	if err != nil {
 		library.Response(err, 500, true).Send(w)
 		return
 	}
 	c.service.Add(&data).Send(w)
+
 }
 
 func (c *users_ctrl) Update(w http.ResponseWriter, r *http.Request) {
@@ -89,7 +106,7 @@ func (c *users_ctrl) Update(w http.ResponseWriter, r *http.Request) {
 	c.service.Update(id, &data).Send(w)
 }
 
-func (c *users_ctrl) Delete(w  http.ResponseWriter, r *http.Request) {
+func (c *users_ctrl) Delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id_int, err := strconv.Atoi(vars["id"])
 	if err != nil {

@@ -27,6 +27,11 @@ func (s *vehicle_service) Add(data *models.Vehicle) *library.Responses {
 	if err != nil {
 		return library.Response(err.Error(), 400, true)
 	}
+	fileURL, err := library.CloudUpload(data.Image)
+	if err != nil {
+		return library.Response(err.Error(), 500, true)
+	}
+	data.Image = fileURL
 	return library.Response(data, 200, false)
 }
 
