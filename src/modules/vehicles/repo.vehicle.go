@@ -16,16 +16,41 @@ func NewRepo(data *gorm.DB) *vehicles_repo {
 	return &vehicles_repo{db: data}
 }
 
-func (r *vehicles_repo) GetAll() (*models.Vehicles, error) {
-	var data models.Vehicles
-	result := r.db.Find(&data)
+func (r *vehicles_repo) GetById(id uint) (*models.Vehicle, error) {
+	var data models.Vehicle
+	result := r.db.First(&data, "id = ?", id)
 	if result.Error != nil {
 		return nil, errors.New("failed to get data")
 	}
 	return &data, nil
+
 }
 
-func (r *vehicles_repo) Insert(data *models.Vehicle) (*models.Vehicle, error){
+func (r *vehicles_repo) GetAll() (*models.Vehicles, error) {
+	var data models.Vehicles
+	result := r.db.Order("id DESC").Find(&data)
+	if result.Error != nil {
+		return nil, errors.New("failed to get data")
+	}
+	if len(data) <= 0 {
+		return nil, errors.New("data not found !")
+	}
+	return &data, nil
+}
+
+func (r *vehicles_repo) GetByRating() (*models.Vehicles, error) {
+	var data models.Vehicles
+	result := r.db.Order("rating DESC").Limit(4).Find(&data)
+	if result.Error != nil {
+		return nil, errors.New("failed to get data")
+	}
+	if len(data) <= 0 {
+		return nil, errors.New("data not found !")
+	}
+	return &data, nil
+}
+
+func (r *vehicles_repo) Insert(data *models.Vehicle) (*models.Vehicle, error) {
 	result := r.db.Create(&data)
 	if result.Error != nil {
 		return nil, result.Error
@@ -48,7 +73,5 @@ func (r *vehicles_repo) Remove(id uint) (*library.Messeage, error) {
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return &library.Messeage{Msg: "successfully delete data"}, nil 
+	return &library.Messeage{Msg: "successfully delete data"}, nil
 }
-
-

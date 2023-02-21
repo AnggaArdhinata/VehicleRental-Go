@@ -4,8 +4,11 @@ go 1.19
 
 require (
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
+	github.com/cloudinary/cloudinary-go/v2 v2.2.0
 	github.com/golang-jwt/jwt/v4 v4.4.3
+	github.com/google/uuid v1.3.0
 	github.com/gorilla/mux v1.8.0
+	github.com/gorilla/schema v1.2.0
 	github.com/joho/godotenv v1.5.1
 	github.com/rs/cors v1.8.3
 	github.com/spf13/cobra v1.6.1
@@ -15,10 +18,7 @@ require (
 )
 
 require (
-	github.com/cloudinary/cloudinary-go/v2 v2.2.0 // indirect
 	github.com/creasty/defaults v1.6.0 // indirect
-	github.com/google/uuid v1.3.0 // indirect
-	github.com/gorilla/schema v1.2.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect

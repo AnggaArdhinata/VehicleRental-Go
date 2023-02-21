@@ -24,9 +24,9 @@ func serve(cmd *cobra.Command, args []string) error {
 	}
 	handler := cors.AllowAll().Handler(mainRoute)
 
-	var addrs string = "localhost:8080"
+	var addrs string = "0.0.0.0:8080"
 	if port := os.Getenv("APP_PORT"); port != "" {
-		addrs = port
+		addrs = ":"+port
 	}
 
 	fmt.Println("== Welcome to Vehicle Rental Back-End Golang App ==")

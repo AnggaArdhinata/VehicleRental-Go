@@ -11,10 +11,6 @@ type reservation_service struct {
 	
 }
 
-// type history struct {
-// 	history interfaces.Reservation_RepoIF
-// }
-
 func NewService(repo interfaces.Reservation_RepoIF) *reservation_service {
 	return &reservation_service{repo}
 }

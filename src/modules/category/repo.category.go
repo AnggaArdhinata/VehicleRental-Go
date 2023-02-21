@@ -28,7 +28,7 @@ func (r *category_repo) GetById(id uint) (*models.Category, error) {
 
 func (r *category_repo) GetAll() (*models.Categories, error) {
 	var data models.Categories
-	result := r.db.Find(&data)
+	result := r.db.Order("id DESC").Find(&data)
 	if result.Error != nil {
 		return nil, errors.New("failed to get data")
 	}
