@@ -27,25 +27,38 @@ func (c *vehicles_ctrl) FindAll(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func (c *vehicles_ctrl) FindByRating(w http.ResponseWriter, r *http.Request) {
+	result := c.service.FindByRating()
+	result.Send(w)
+	return
+
+}
+
 func (c *vehicles_ctrl) Add(w http.ResponseWriter, r *http.Request) {
 	var data models.Vehicle
 	var decoder = schema.NewDecoder()
-	err := json.NewDecoder(r.Body).Decode(&data)
+
+	file, handler, err := r.FormFile("image")
 	if err != nil {
-		library.Response(err.Error(), 500, true).Send(w)
-		return
+		panic(err)
 	}
-	uploads := r.Context().Value("file")
-	if uploads != nil {
-		data.Image = uploads.(string)
-		return
-	}
-	err = decoder.Decode(&data, r.PostForm)
+	defer file.Close()
+
+	uploadImage, publicId, err := library.UploadImage("vehicle", file, handler)
 	if err != nil {
 		library.Response(err, 500, true)
 		return
 	}
+	data.Image = uploadImage
+	// fmt.Println(publicId)
+	data.ImageUuid = publicId
 
+	err = decoder.Decode(&data, r.Form)
+	if err != nil {
+		library.Response(err, 500, true)
+		return
+	}
+	
 	c.service.Add(&data).Send(w)
 }
 

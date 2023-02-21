@@ -1,0 +1,75 @@
+version: '3.9'
+services:
+  app:
+    image: setsunaexia/vehicle-rental:1.1
+    container_name: go_container
+    env_file:
+      - .env
+    tty: true
+    ports:
+      - '4042:4040'
+    restart: on-failure
+    command: "/app/backend-go migrate -u"
+    depends_on:
+      - pgdb
+    networks:
+      - godev
+
+  pgdb:
+    image: postgres:15
+    container_name: pg_container
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    ports:
+      - '5431:5432'
+    # volumes:
+    #   - pg_data:/var/lib/postgresql/data
+    networks:
+      - godev
+
+volumes:
+  pg_data:
+
+# Networks to be created to facilitate communication between containers
+networks:
+  godev:
+    driver: bridge
+
+
+
+# version: "3.9"
+# services:
+#   godb:
+#     image: postgres:15
+#     container_name: pg_container
+#     environment:
+#       - POSTGRES_PASSWORD:${DB_PASS}
+#       - POSTGRES_USER:${DB_USER}
+#       - POSTGRES_DB:${DB_NAME}
+#     volumes:
+#       - data:/var/lib/postgresql/data
+#     ports:
+#       - "5440:5432"
+#     networks:
+#       - netdev
+
+#   goback:
+#     image: setsunaexia/vehicle-rental:1
+#     container_name: go_container
+#     depends_on:
+#       - godb
+#     ports:
+#       - 8083:8080
+#     env_file: 
+#       - .env
+#     networks:
+#       - netdev
+    
+# volumes:
+#   data:
+
+# networks:
+#   netdev:
+#     driver: bridge

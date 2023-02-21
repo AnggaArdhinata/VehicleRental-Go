@@ -64,14 +64,13 @@ func (c *users_ctrl) FindAll(w http.ResponseWriter, r *http.Request) {
 func (c *users_ctrl) Add(w http.ResponseWriter, r *http.Request) {
 	var data models.User
 	var decoder = schema.NewDecoder()
-
 	file, handler, err := r.FormFile("image")
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
 
-	uploadImage, publicId, err := library.UploadImage(file, handler)
+	uploadImage, publicId, err := library.UploadImage("users",file, handler)
 	if err != nil {
 		library.Response(err, 500, true)
 		return

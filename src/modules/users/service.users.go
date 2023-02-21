@@ -60,6 +60,7 @@ func (s *user_service) FindAll() *library.Responses {
 }
 
 func (s *user_service) Add(data *models.User) *library.Responses {
+	
 	HashPass, err := library.HashPassword(data.Password)
 	if err != nil {
 		return library.Response(err.Error(), 400, true)

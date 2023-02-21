@@ -27,14 +27,20 @@ func (r *reservation_repo) GetById(id uint) (*models.Reservation, error) {
 
 func (r *reservation_repo) GetAll() (*models.Reservations, error) {
 	var data models.Reservations
-	result := r.db.Find(&data)
+	result := r.db.Preload("User", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id, name, email")
+	}).Preload("Vehicle", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id, name, location, price")
+	}).Preload("Vehicle.Category", func(db *gorm.DB) *gorm.DB {
+		return db.Select("name")
+	}).Find(&data)
 	if result.Error != nil {
 		return nil, errors.New("failed to get data")
 	}
 	return &data, nil
 }
 
-func (r *reservation_repo) Insert(data *models.Reservation) (*models.Reservation, error){
+func (r *reservation_repo) Insert(data *models.Reservation) (*models.Reservation, error) {
 	result := r.db.Create(&data)
 	if result.Error != nil {
 		return nil, result.Error
@@ -57,7 +63,5 @@ func (r *reservation_repo) Remove(id uint) (*library.Messeage, error) {
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return &library.Messeage{Msg: "successfully delete data"}, nil 
+	return &library.Messeage{Msg: "successfully delete data"}, nil
 }
-
-
