@@ -45,21 +45,14 @@ func (s *auth_service) Login(body *models.User) *library.Responses {
 }
 
 func (s *auth_service) Register(data *models.User) *library.Responses{
-	email, err := s.repo.FindByEmail(data.Email)
+	HashPass, err := library.HashPassword(data.Password)
 	if err != nil {
 		return library.Response(err.Error(), 400, true)
 	}
-	if len(email.Email) > 0 {
-		return library.Response("email already registered", 400, true)
+	data.Password = HashPass
+	data, err = s.repo.Insert(data)
+	if err != nil {
+		return library.Response(err.Error(), 400, true)
 	}
-		HashPass, err := library.HashPassword(data.Password)
-		if err != nil {
-			return library.Response(err.Error(), 400, true)
-		}
-		data.Password = HashPass
-		data, err = s.repo.Insert(data)
-		if err != nil {
-			return library.Response(err.Error(), 400, true)
-		}
-		return library.Response(data, 200, false)
+	return library.Response(data, 200, false)
 }

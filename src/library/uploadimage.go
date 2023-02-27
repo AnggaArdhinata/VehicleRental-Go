@@ -29,6 +29,7 @@ func UploadImage(directory string, file multipart.File, handler *multipart.FileH
 	if err != nil {
 		return "","", err
 	}
+
 	
 	return resp.SecureURL, resp.PublicID, nil
 
